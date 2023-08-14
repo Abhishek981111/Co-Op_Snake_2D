@@ -14,10 +14,17 @@ public class SnakeController : MonoBehaviour
     private bool canChangeDirection = true;
     private KeyCode[] playerKeys;
 
+    private Vector2 ScreenBounds;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         currentDirection = Vector2.right; // Initial direction
+
+        // Calculate screen bounds based on the camera's orthographic size and aspect ratio
+        float cameraHeight = Camera.main.orthographicSize;
+        float cameraWidth = cameraHeight * Camera.main.aspect;
+        ScreenBounds = new Vector2(cameraWidth, cameraHeight);
 
         // Set player keys based on the GameObject's tag
         if (gameObject.CompareTag("Player1"))
@@ -71,6 +78,25 @@ public class SnakeController : MonoBehaviour
     private void MoveSnake(Vector2 direction)
     {
         Vector2 newPosition = rb.position + direction * moveSpeed * Time.fixedDeltaTime;
+
+        //screen Wrapping
+        if(newPosition.x < -ScreenBounds.x)
+        {
+            newPosition.x = ScreenBounds.x;
+        }
+        else if(newPosition.x > ScreenBounds.x)
+        {
+            newPosition.x = -ScreenBounds.x;
+        }
+        else if(newPosition.y < -ScreenBounds.y)
+        {
+            newPosition.y = ScreenBounds.y;
+        }
+        else if(newPosition.y > ScreenBounds.y)
+        {
+            newPosition.y = -ScreenBounds.y;
+        }
+        
         rb.MovePosition(newPosition);
     }
 
