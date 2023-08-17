@@ -4,6 +4,8 @@ using UnityEngine;
 public class SnakeController : MonoBehaviour
 {
     public float moveSpeed;
+    public GameObject bodySegmentPrefab;
+
     public Sprite upSprite;
     public Sprite downSprite;
     public Sprite leftSprite;
@@ -13,6 +15,7 @@ public class SnakeController : MonoBehaviour
     private Rigidbody2D rb;
     private bool canChangeDirection = true;
     private KeyCode[] playerKeys;
+    private List<Transform> bodySegments = new List<Transform>();
 
     private Vector2 ScreenBounds;
 
@@ -98,6 +101,17 @@ public class SnakeController : MonoBehaviour
         }
         
         rb.MovePosition(newPosition);
+
+        //Move the body segments
+        //one position forward each frame, and add a new segment at head's previous location
+        if(bodySegments.Count > 0)
+        {
+            for(int i = bodySegments.Count - 1; i > 0; i--)
+            {
+                bodySegments[i].position = bodySegments[i - 1].position;
+            }
+            bodySegments[0].position = rb.position;
+        }
     }
 
     private void UpdateHeadSprite()
@@ -126,13 +140,58 @@ public class SnakeController : MonoBehaviour
         if(collision.CompareTag("GrowthFood"))
         {
             Destroy(collision.gameObject);
-            //Grow snake;
+            GrowSnake();
         }
         else if(collision.CompareTag("DecreaseFood"))
         {
             Destroy(collision.gameObject);
-            //Decrease snake;
+            DecreaseSnake();
         }
         //also for collision with other snake
     }
+
+    private void GrowSnake()
+    {
+        // Create a new segment and add it to the bodySegments list
+        GameObject newSegment = Instantiate(bodySegmentPrefab);
+
+        // If there are existing body segments, position the new segment based on the last segment's position
+        if (bodySegments.Count > 0)
+        {
+            newSegment.transform.position = bodySegments[bodySegments.Count - 1].position;
+        }
+        else
+        {
+            // If no segments exist yet, position the new segment at the snake's current position
+            newSegment.transform.position = transform.position;
+        }
+
+        SpriteRenderer segmentRenderer = bodySegmentPrefab.GetComponent<SpriteRenderer>();
+        newSegment.transform.localScale =  segmentRenderer.bounds.size;
+        bodySegments.Add(newSegment.transform);
+
+        
+        // // Create a new segment and add it to the bodySegments list
+        // GameObject newSegment = Instantiate(bodySegmentPrefab);
+    
+        // // Determine the position for the new segment based on the snake's current tail position
+        // Vector3 tailPosition = bodySegments[bodySegments.Count - 1].position;
+        // newSegment.transform.position = tailPosition;
+
+        // // Set the scale of the new segment to match the desired size
+        // newSegment.transform.localScale = Vector3.one;
+
+        // bodySegments.Add(newSegment.transform);
+    }
+
+
+    private void DecreaseSnake()
+    {
+        if(bodySegments.Count > 1)
+        {
+            Destroy(bodySegments[bodySegments.Count - 1].gameObject);
+            bodySegments.RemoveAt(bodySegments.Count - 1);
+        }
+    }
+    
 }
