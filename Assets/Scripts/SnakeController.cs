@@ -5,6 +5,8 @@ public class SnakeController : MonoBehaviour
 {
     public float moveSpeed;
     public GameObject bodySegmentPrefab;
+    public float initialBodySegmentDistance;
+    private bool justAte = false;
 
     public Sprite upSprite;
     public Sprite downSprite;
@@ -48,6 +50,22 @@ public class SnakeController : MonoBehaviour
     {
         // Move the snake automatically in its current direction
         MoveSnake(currentDirection);
+    }
+
+    private void LateUpdate()
+    {
+        //Using Late Update because moving snake is giving me some flickering issues when snake tries eating food
+        if (justAte)
+        {
+            justAte = false;
+            Vector2 prevPosition = rb.position;
+
+            foreach (Transform segment in bodySegments)
+            {
+                segment.position = prevPosition - (Vector2)transform.up * initialBodySegmentDistance;
+                prevPosition = segment.position;
+            }
+        }
     }
 
     private void HandleInput()
@@ -103,15 +121,16 @@ public class SnakeController : MonoBehaviour
         rb.MovePosition(newPosition);
 
         //Move the body segments
-        //one position forward each frame, and add a new segment at head's previous location
-        if(bodySegments.Count > 0)
-        {
-            for(int i = bodySegments.Count - 1; i > 0; i--)
-            {
-                bodySegments[i].position = bodySegments[i - 1].position;
-            }
-            bodySegments[0].position = rb.position;
-        }
+        MoveBodySegments();
+        // //one position forward each frame, and add a new segment at head's previous location
+        // if(bodySegments.Count > 0)
+        // {
+        //     for(int i = bodySegments.Count - 1; i > 0; i--)
+        //     {
+        //         bodySegments[i].position = bodySegments[i - 1].position;
+        //     }
+        //     bodySegments[0].position = rb.position;
+        // }
     }
 
     private void UpdateHeadSprite()
@@ -150,27 +169,72 @@ public class SnakeController : MonoBehaviour
         //also for collision with other snake
     }
 
+    private void MoveBodySegments()
+    {
+        Vector2 prevPosition = rb.position;
+
+        foreach (Transform segment in bodySegments)
+        {
+            Vector2 tempPosition = segment.position;
+            segment.position = prevPosition;
+            prevPosition = tempPosition;
+        }
+    }
+
+    private void UpdateBodySegmentPositions()
+    {
+        Vector2 prevPosition = rb.position;
+
+        foreach (Transform segment in bodySegments)
+        {
+            segment.position = prevPosition - (Vector2)transform.up * initialBodySegmentDistance;
+            prevPosition = segment.position;
+        }
+    }
+
     private void GrowSnake()
     {
-        // Create a new segment and add it to the bodySegments list
         GameObject newSegment = Instantiate(bodySegmentPrefab);
-
-        // If there are existing body segments, position the new segment based on the last segment's position
-        if (bodySegments.Count > 0)
-        {
-            newSegment.transform.position = bodySegments[bodySegments.Count - 1].position;
-        }
-        else
-        {
-            // If no segments exist yet, position the new segment at the snake's current position
-            newSegment.transform.position = transform.position;
-        }
-
-        SpriteRenderer segmentRenderer = bodySegmentPrefab.GetComponent<SpriteRenderer>();
-        newSegment.transform.localScale =  segmentRenderer.bounds.size;
         bodySegments.Add(newSegment.transform);
+        justAte = true;
+
+        UpdateBodySegmentPositions();
+        
+        
+        // // Create a new body segment and position it behind the head
+        // GameObject newSegment = Instantiate(bodySegmentPrefab);
+        // Vector2 newPosition = rb.position - currentDirection; // Position behind the head
+        // newSegment.transform.position = newPosition;
+
+        // // Add the new segment to the list and update bodySegments order
+        // bodySegments.Insert(0, newSegment.transform);
+
+        // // Update the sprite of the new segment
+        // SpriteRenderer segmentRenderer = newSegment.GetComponent<SpriteRenderer>();
+        // segmentRenderer.sprite = GetComponent<SpriteRenderer>().sprite;
+
+
+
+        // // Create a new segment and add it to the bodySegments list
+        // GameObject newSegment = Instantiate(bodySegmentPrefab);
+
+        // // If there are existing body segments, position the new segment based on the last segment's position
+        // if (bodySegments.Count > 0)
+        // {
+        //     newSegment.transform.position = bodySegments[bodySegments.Count - 1].position;
+        // }
+        // else
+        // {
+        //     // If no segments exist yet, position the new segment at the snake's current position
+        //     newSegment.transform.position = transform.position;
+        // }
+
+        // SpriteRenderer segmentRenderer = bodySegmentPrefab.GetComponent<SpriteRenderer>();
+        // newSegment.transform.localScale =  segmentRenderer.bounds.size;
+        // bodySegments.Add(newSegment.transform);
 
         
+
         // // Create a new segment and add it to the bodySegments list
         // GameObject newSegment = Instantiate(bodySegmentPrefab);
     
@@ -187,11 +251,19 @@ public class SnakeController : MonoBehaviour
 
     private void DecreaseSnake()
     {
-        if(bodySegments.Count > 1)
+        if (bodySegments.Count > 0)
         {
-            Destroy(bodySegments[bodySegments.Count - 1].gameObject);
-            bodySegments.RemoveAt(bodySegments.Count - 1);
+            Transform lastSegment = bodySegments[bodySegments.Count - 1];
+            bodySegments.Remove(lastSegment);
+            Destroy(lastSegment.gameObject);
         }
+        // if(bodySegments.Count > 1)
+        // {
+        //     Destroy(bodySegments[bodySegments.Count - 1].gameObject);
+        //     bodySegments.RemoveAt(bodySegments.Count - 1);
+        // }
     }
+
+
     
 }
