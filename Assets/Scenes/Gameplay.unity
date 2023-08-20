@@ -274,6 +274,8 @@ MonoBehaviour:
   downSprite: {fileID: 21300000, guid: 4640f5d8b72c9d34b8e42c877c375bde, type: 3}
   leftSprite: {fileID: 21300000, guid: 2a48009b1d7839549bdfb20495b3240d, type: 3}
   rightSprite: {fileID: 21300000, guid: 3b7a41e0d919a504ea5ced7193f9069f, type: 3}
+  growthAmount: 5000
+  decreaseAmount: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,9 @@ public class SnakeController : MonoBehaviour
     public Sprite leftSprite;
     public Sprite rightSprite;
 
+    public float growthAmount;    // We can adjust this value for flexible growth
+    public float decreaseAmount;  // We can adjust this value for flexible decrease
+
     private Vector2 currentDirection;
     private Rigidbody2D rb;
     private bool canChangeDirection = true;
@@ -181,13 +184,13 @@ public class SnakeController : MonoBehaviour
         }
     }
 
-    private void UpdateBodySegmentPositions()
+    private void UpdateBodySegmentPositions(float amount)
     {
         Vector2 prevPosition = rb.position;
 
         foreach (Transform segment in bodySegments)
         {
-            segment.position = prevPosition - (Vector2)transform.up * initialBodySegmentDistance;
+            segment.position = prevPosition - (Vector2)transform.up * amount;
             prevPosition = segment.position;
         }
     }
@@ -198,7 +201,7 @@ public class SnakeController : MonoBehaviour
         bodySegments.Add(newSegment.transform);
         justAte = true;
 
-        UpdateBodySegmentPositions();
+        UpdateBodySegmentPositions(growthAmount);
         
         
         // // Create a new body segment and position it behind the head
@@ -253,9 +256,14 @@ public class SnakeController : MonoBehaviour
     {
         if (bodySegments.Count > 0)
         {
-            Transform lastSegment = bodySegments[bodySegments.Count - 1];
-            bodySegments.Remove(lastSegment);
-            Destroy(lastSegment.gameObject);
+            int segmentsToRemove = Mathf.Min(bodySegments.Count, Mathf.CeilToInt(decreaseAmount));
+            
+            for (int i = 0; i < segmentsToRemove; i++)
+            {
+                Transform lastSegment = bodySegments[bodySegments.Count - 1];
+                bodySegments.Remove(lastSegment);
+                Destroy(lastSegment.gameObject);
+            }
         }
         // if(bodySegments.Count > 1)
         // {
