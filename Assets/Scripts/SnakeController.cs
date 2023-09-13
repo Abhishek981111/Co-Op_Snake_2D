@@ -7,6 +7,7 @@ public class SnakeController : MonoBehaviour
     public GameObject bodySegmentPrefab;
     public float initialBodySegmentDistance;
     private bool justAte = false;
+    private bool isAlive = true;
 
     public Sprite upSprite;
     public Sprite downSprite;
@@ -103,6 +104,8 @@ public class SnakeController : MonoBehaviour
     {
         Vector2 newPosition = rb.position + direction * moveSpeed * Time.fixedDeltaTime;
 
+        
+
         //screen Wrapping
         if(newPosition.x < -ScreenBounds.x)
         {
@@ -170,6 +173,23 @@ public class SnakeController : MonoBehaviour
             DecreaseSnake();
         }
         //also for collision with other snake
+        else if (collision.CompareTag("Player1") || collision.CompareTag("Player2"))
+        {
+            SnakeController otherSnake = collision.GetComponent<SnakeController>();
+
+            if (otherSnake != null)
+            {
+                Die();
+                otherSnake.Die();
+            }
+        }
+    }
+
+    private void Die()
+    {
+        isAlive = false;
+        Debug.Log("Snake died!");
+        //add game over logic 
     }
 
     private void MoveBodySegments()
@@ -272,6 +292,4 @@ public class SnakeController : MonoBehaviour
         // }
     }
 
-
-    
 }

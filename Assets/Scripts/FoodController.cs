@@ -5,6 +5,7 @@ using UnityEngine;
 public class FoodController : MonoBehaviour
 {
     public float foodSpawnInterval;
+    public float foodLifeTime = 10f;
     public GameObject growthFoodPrefab;
     public GameObject decreaseFoodPrefab;
 
@@ -14,23 +15,28 @@ public class FoodController : MonoBehaviour
     public float yFoodSpawnRangePositive;
 
     public SnakeController snakeController;
-    void Start()
+
+    private void Start()
     {
-        //Start spawning food
-        InvokeRepeating("SpawnFood", foodSpawnInterval, foodSpawnInterval);
+        // Food spawning start
+        StartCoroutine(SpawnFoodRoutine());
     }
 
-    private void SpawnFood()
+    private IEnumerator SpawnFoodRoutine()
     {
-        //Adjust spwan position range
-        Vector2 spawnPosition = new Vector2(Random.Range(xFoodSpawnRangeNegative, xFoodSpawnRangePositive), Random.Range(yFoodSpawnRangeNegative, yFoodSpawnRangePositive));
-        GameObject foodPrefab = Random.value < 0.5f ? growthFoodPrefab : decreaseFoodPrefab;
+        while (true)
+        {
+            // To just adjust spawn position range
+            Vector2 spawnPosition = new Vector2(Random.Range(xFoodSpawnRangeNegative, xFoodSpawnRangePositive), Random.Range(yFoodSpawnRangeNegative, yFoodSpawnRangePositive));
+            GameObject foodPrefab = Random.value < 0.5f ? growthFoodPrefab : decreaseFoodPrefab;
 
-        // if(foodPrefab = decreaseFoodPrefab)
-        // {
-        //     foodPrefab = growthFoodPrefab;  //Ensure that snake length can't go too low
-        // }
+            GameObject food = Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
 
-        Instantiate(foodPrefab, spawnPosition, Quaternion.identity);
+            // Set the lifetime of the food item
+            Destroy(food, foodLifeTime);
+
+            // Wait for the next food spawn interval
+            yield return new WaitForSeconds(foodSpawnInterval);
+        }
     }
 }
