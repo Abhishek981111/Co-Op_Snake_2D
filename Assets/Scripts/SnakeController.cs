@@ -47,7 +47,10 @@ public class SnakeController : MonoBehaviour
 
     private void Update()
     {
-        HandleInput();
+        if(isAlive)
+        {
+            HandleInput();
+        }
     }
 
     private void FixedUpdate()
@@ -104,7 +107,12 @@ public class SnakeController : MonoBehaviour
     {
         Vector2 newPosition = rb.position + direction * moveSpeed * Time.fixedDeltaTime;
 
-        
+        //Check for self bite
+        if(IsSelfBite(newPosition))
+        {
+            Die();
+            return;
+        }
 
         //screen Wrapping
         if(newPosition.x < -ScreenBounds.x)
@@ -185,11 +193,23 @@ public class SnakeController : MonoBehaviour
         }
     }
 
+    private bool IsSelfBite(Vector2 position)
+    {
+        foreach(Transform segment in bodySegments)
+        {
+            if((Vector2)segment.position == position)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void Die()
     {
         isAlive = false;
-        Debug.Log("Snake died!");
         //add game over logic 
+        Debug.Log("Snake died!");
     }
 
     private void MoveBodySegments()
@@ -291,5 +311,7 @@ public class SnakeController : MonoBehaviour
         //     bodySegments.RemoveAt(bodySegments.Count - 1);
         // }
     }
+
+
 
 }
