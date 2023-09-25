@@ -13,9 +13,11 @@ public class SnakeController : MonoBehaviour
     public Sprite downSprite;
     public Sprite leftSprite;
     public Sprite rightSprite;
+    // public GameObject tailPrefab;
+    // private GameObject tail;
 
-    public float growthAmount;    // We can adjust this value for flexible growth
-    public float decreaseAmount;  // We can adjust this value for flexible decrease
+    public float growthAmount;    //adjust value for flexible growth
+    public float decreaseAmount;  //adjust value for flexible decrease
 
     private Vector2 currentDirection;
     private Rigidbody2D rb;
@@ -215,13 +217,30 @@ public class SnakeController : MonoBehaviour
     private void MoveBodySegments()
     {
         Vector2 prevPosition = rb.position;
+        // Transform lastSegment = null;
 
         foreach (Transform segment in bodySegments)
         {
             Vector2 tempPosition = segment.position;
             segment.position = prevPosition;
             prevPosition = tempPosition;
+
+            // //Update the last segment reference
+            // lastSegment = segment;
         }
+
+        // //Update the position of the tail GameObject
+        // if (lastSegment != null)
+        // {
+        //     if(tail == null)
+        //     {
+        //         tail = Instantiate(tailPrefab, lastSegment.position, Quaternion.identity);
+        //     }
+        //     else
+        //     {
+        //         tail.transform.position = lastSegment.position;
+        //     }
+        // }
     }
 
     private void UpdateBodySegmentPositions(float amount)
@@ -240,6 +259,9 @@ public class SnakeController : MonoBehaviour
         GameObject newSegment = Instantiate(bodySegmentPrefab);
         bodySegments.Add(newSegment.transform);
         justAte = true;
+
+        // // Instantiate the tail prefab at the last body segment's position
+        // Instantiate(tailPrefab, bodySegments[bodySegments.Count - 1].position, Quaternion.identity);
 
         UpdateBodySegmentPositions(growthAmount);
         
