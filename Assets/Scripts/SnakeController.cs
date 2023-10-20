@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class SnakeController : MonoBehaviour
@@ -12,7 +13,7 @@ public class SnakeController : MonoBehaviour
     public Sprite upSprite;
     public Sprite downSprite;
     public Sprite leftSprite;
-    public Sprite rightSprite;
+    public Sprite rightSprite;           //TBC
     // public GameObject tailPrefab;
     // private GameObject tail;
 
@@ -83,20 +84,28 @@ public class SnakeController : MonoBehaviour
             return;
 
         if (Input.GetKeyDown(playerKeys[0]) && currentDirection != Vector2.down)
-            {ChangeDirection(Vector2.up);}
+            {
+                ChangeDirection(Vector2.up);
+            }
         else if (Input.GetKeyDown(playerKeys[1]) && currentDirection != Vector2.up)
-            {ChangeDirection(Vector2.down);}
+            {
+                ChangeDirection(Vector2.down);
+            }
         else if (Input.GetKeyDown(playerKeys[2]) && currentDirection != Vector2.right)
-            {ChangeDirection(Vector2.left);}
+            {
+                ChangeDirection(Vector2.left);
+            }
         else if (Input.GetKeyDown(playerKeys[3]) && currentDirection != Vector2.left)
-            {ChangeDirection(Vector2.right);}
+            {
+                ChangeDirection(Vector2.right);
+            }
     }
 
     private void ChangeDirection(Vector2 newDirection)
     {
         canChangeDirection = false;
         currentDirection = newDirection;
-        UpdateHeadSprite();
+        UpdateHeadSprite();                           //TBC
         Invoke("EnableChangeDirection", 0.2f); // Delay to prevent rapid direction changes
     }
 
@@ -149,6 +158,7 @@ public class SnakeController : MonoBehaviour
         // }
     }
 
+    // TBC
     private void UpdateHeadSprite()
     {
         // Change snake head sprite based on movement direction
@@ -326,7 +336,7 @@ public class SnakeController : MonoBehaviour
                 bodySegments.Remove(lastSegment);
                 Destroy(lastSegment.gameObject);
             }
-        }
+        } 
         // if(bodySegments.Count > 1)
         // {
         //     Destroy(bodySegments[bodySegments.Count - 1].gameObject);
@@ -334,6 +344,8 @@ public class SnakeController : MonoBehaviour
         // }
     }
 
-
-
+    public int GetSnakeSize()
+    {
+        return bodySegments.Count + 1;  //Added 1 for the head
+    }
 }
