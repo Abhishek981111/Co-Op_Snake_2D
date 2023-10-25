@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using TMPro;
 
 public class SnakeController : MonoBehaviour
 {
@@ -14,8 +15,6 @@ public class SnakeController : MonoBehaviour
     public Sprite downSprite;
     public Sprite leftSprite;
     public Sprite rightSprite;           //TBC
-    // public GameObject tailPrefab;
-    // private GameObject tail;
 
     public float growthAmount;    //adjust value for flexible growth
     public float decreaseAmount;  //adjust value for flexible decrease
@@ -27,12 +26,13 @@ public class SnakeController : MonoBehaviour
     private List<Transform> bodySegments = new List<Transform>();
 
     private Vector2 ScreenBounds;
-
+    public TextMeshProUGUI scoreText;
+    private int score = 0;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         currentDirection = Vector2.right; // Initial direction
-
+    
         // Calculate screen bounds based on the camera's orthographic size and aspect ratio
         float cameraHeight = Camera.main.orthographicSize;
         float cameraWidth = cameraHeight * Camera.main.aspect;
@@ -46,6 +46,9 @@ public class SnakeController : MonoBehaviour
 
         // Start snake movement immediately
         rb.velocity = currentDirection * moveSpeed;
+
+        //Find TextMeshPro Text component
+        //scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
     }
 
     private void Update()
@@ -147,15 +150,6 @@ public class SnakeController : MonoBehaviour
 
         //Move the body segments
         MoveBodySegments();
-        // //one position forward each frame, and add a new segment at head's previous location
-        // if(bodySegments.Count > 0)
-        // {
-        //     for(int i = bodySegments.Count - 1; i > 0; i--)
-        //     {
-        //         bodySegments[i].position = bodySegments[i - 1].position;
-        //     }
-        //     bodySegments[0].position = rb.position;
-        // }
     }
 
     // TBC
@@ -186,11 +180,13 @@ public class SnakeController : MonoBehaviour
         {
             Destroy(collision.gameObject);
             GrowSnake();
+            IncreaseScore(10);
         }
         else if(collision.CompareTag("DecreaseFood"))
         {
             Destroy(collision.gameObject);
             DecreaseSnake();
+            DecreaseScore(5);
         }
         //also for collision with other snake
         else if (collision.CompareTag("Player1") || collision.CompareTag("Player2"))
@@ -234,23 +230,7 @@ public class SnakeController : MonoBehaviour
             Vector2 tempPosition = segment.position;
             segment.position = prevPosition;
             prevPosition = tempPosition;
-
-            // //Update the last segment reference
-            // lastSegment = segment;
         }
-
-        // //Update the position of the tail GameObject
-        // if (lastSegment != null)
-        // {
-        //     if(tail == null)
-        //     {
-        //         tail = Instantiate(tailPrefab, lastSegment.position, Quaternion.identity);
-        //     }
-        //     else
-        //     {
-        //         tail.transform.position = lastSegment.position;
-        //     }
-        // }
     }
 
     private void UpdateBodySegmentPositions(float amount)
@@ -270,57 +250,7 @@ public class SnakeController : MonoBehaviour
         bodySegments.Add(newSegment.transform);
         justAte = true;
 
-        // // Instantiate the tail prefab at the last body segment's position
-        // Instantiate(tailPrefab, bodySegments[bodySegments.Count - 1].position, Quaternion.identity);
-
         UpdateBodySegmentPositions(growthAmount);
-        
-        
-        // // Create a new body segment and position it behind the head
-        // GameObject newSegment = Instantiate(bodySegmentPrefab);
-        // Vector2 newPosition = rb.position - currentDirection; // Position behind the head
-        // newSegment.transform.position = newPosition;
-
-        // // Add the new segment to the list and update bodySegments order
-        // bodySegments.Insert(0, newSegment.transform);
-
-        // // Update the sprite of the new segment
-        // SpriteRenderer segmentRenderer = newSegment.GetComponent<SpriteRenderer>();
-        // segmentRenderer.sprite = GetComponent<SpriteRenderer>().sprite;
-
-
-
-        // // Create a new segment and add it to the bodySegments list
-        // GameObject newSegment = Instantiate(bodySegmentPrefab);
-
-        // // If there are existing body segments, position the new segment based on the last segment's position
-        // if (bodySegments.Count > 0)
-        // {
-        //     newSegment.transform.position = bodySegments[bodySegments.Count - 1].position;
-        // }
-        // else
-        // {
-        //     // If no segments exist yet, position the new segment at the snake's current position
-        //     newSegment.transform.position = transform.position;
-        // }
-
-        // SpriteRenderer segmentRenderer = bodySegmentPrefab.GetComponent<SpriteRenderer>();
-        // newSegment.transform.localScale =  segmentRenderer.bounds.size;
-        // bodySegments.Add(newSegment.transform);
-
-        
-
-        // // Create a new segment and add it to the bodySegments list
-        // GameObject newSegment = Instantiate(bodySegmentPrefab);
-    
-        // // Determine the position for the new segment based on the snake's current tail position
-        // Vector3 tailPosition = bodySegments[bodySegments.Count - 1].position;
-        // newSegment.transform.position = tailPosition;
-
-        // // Set the scale of the new segment to match the desired size
-        // newSegment.transform.localScale = Vector3.one;
-
-        // bodySegments.Add(newSegment.transform);
     }
 
 
@@ -337,15 +267,27 @@ public class SnakeController : MonoBehaviour
                 Destroy(lastSegment.gameObject);
             }
         } 
-        // if(bodySegments.Count > 1)
-        // {
-        //     Destroy(bodySegments[bodySegments.Count - 1].gameObject);
-        //     bodySegments.RemoveAt(bodySegments.Count - 1);
-        // }
     }
 
     public int GetSnakeSize()
     {
         return bodySegments.Count + 1;  //Added 1 for the head
+    }
+
+    private void IncreaseScore(int amount)
+    {
+        score += amount;
+        UpdateScoreText();
+    }
+
+    private void DecreaseScore(int amount)
+    {
+        score -= amount;
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
+        scoreText.text = "Score: " + score;
     }
 }
