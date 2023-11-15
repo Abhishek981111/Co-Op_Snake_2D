@@ -8,6 +8,9 @@ TagManager:
   - GrowthFood
   - DecreaseFood
   - Player2
+  - ScoreBoostPowerUp
+  - ShieldPowerUp
+  - SpeedUpPowerUp
   layers:
   - Default
   - TransparentFX

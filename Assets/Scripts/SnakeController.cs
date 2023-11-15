@@ -26,8 +26,23 @@ public class SnakeController : MonoBehaviour
     private List<Transform> bodySegments = new List<Transform>();
 
     private Vector2 ScreenBounds;
+
     public TextMeshProUGUI scoreText;
     private int score = 0;
+
+    public GameObject shieldPrefab;
+    public GameObject scoreBoostPrefab;
+    public GameObject speedUpPrefab;
+
+    // private bool isShieldActive = false;
+    // private bool isScoreBoostActive = false;
+    // private bool isSpeedUpActive = false;
+
+    // private float powerUpCooldown = 10.0f;
+    // private float timeSinceLastPowerUp = 0.0f;
+    // private float powerUpDuration = 3.0f;
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -47,12 +62,23 @@ public class SnakeController : MonoBehaviour
         // Start snake movement immediately
         rb.velocity = currentDirection * moveSpeed;
 
-        //Find TextMeshPro Text component
-        //scoreText = GameObject.Find("ScoreText").GetComponent<TextMeshProUGUI>();
+        //timeSinceLastPowerUp = powerUpCooldown;
+
+        shieldPrefab.SetActive(false);
+        scoreBoostPrefab.SetActive(false);
+        speedUpPrefab.SetActive(false);
     }
 
     private void Update()
     {
+        // timeSinceLastPowerUp += Time.deltaTime;
+
+        // if (timeSinceLastPowerUp >= powerUpCooldown)
+        // {
+        //     //ActivateRandomPowerUp();
+        //     timeSinceLastPowerUp = 0.0f;
+        // }
+
         if(isAlive)
         {
             HandleInput();
