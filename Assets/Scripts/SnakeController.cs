@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Collections;
 using UnityEngine;
 using TMPro;
+using JetBrains.Annotations;
+using System;
 
 public class SnakeController : MonoBehaviour
 {
@@ -30,17 +32,19 @@ public class SnakeController : MonoBehaviour
     public TextMeshProUGUI scoreText;
     private int score = 0;
 
+    public GameObject[] powerUps; // Array of power-up prefabs
+
     public GameObject shieldPrefab;
     public GameObject scoreBoostPrefab;
     public GameObject speedUpPrefab;
 
-    // private bool isShieldActive = false;
-    // private bool isScoreBoostActive = false;
-    // private bool isSpeedUpActive = false;
+    private bool isShieldActive = false;
+    private bool isScoreBoostActive = false;
+    private bool isSpeedUpActive = false;
 
-    // private float powerUpCooldown = 10.0f;
-    // private float timeSinceLastPowerUp = 0.0f;
-    // private float powerUpDuration = 3.0f;
+    private float powerUpCooldown = 10.0f;
+    private float timeSinceLastPowerUp = 0.0f;
+    private float powerUpDuration = 10.0f;
 
 
     private void Start()
@@ -62,22 +66,25 @@ public class SnakeController : MonoBehaviour
         // Start snake movement immediately
         rb.velocity = currentDirection * moveSpeed;
 
-        //timeSinceLastPowerUp = powerUpCooldown;
+        timeSinceLastPowerUp = powerUpCooldown;
 
         shieldPrefab.SetActive(false);
         scoreBoostPrefab.SetActive(false);
         speedUpPrefab.SetActive(false);
+
+        StartCoroutine(SpawnPowerUpsRoutine());
     }
 
     private void Update()
     {
-        // timeSinceLastPowerUp += Time.deltaTime;
+        timeSinceLastPowerUp += Time.deltaTime;
 
-        // if (timeSinceLastPowerUp >= powerUpCooldown)
-        // {
-        //     //ActivateRandomPowerUp();
-        //     timeSinceLastPowerUp = 0.0f;
-        // }
+        if (timeSinceLastPowerUp >= powerUpCooldown)
+        {
+            
+            //ActivateRandomPowerUp();
+            timeSinceLastPowerUp = 0.0f;
+        }
 
         if(isAlive)
         {
@@ -206,7 +213,8 @@ public class SnakeController : MonoBehaviour
         {
             Destroy(collision.gameObject);
             GrowSnake();
-            IncreaseScore(10);
+            int scoreMultiplier = isScoreBoostActive ? 2 : 1;
+            IncreaseScore(10 * scoreMultiplier);  //We can adjust as per need.
         }
         else if(collision.CompareTag("DecreaseFood"))
         {
@@ -214,16 +222,116 @@ public class SnakeController : MonoBehaviour
             DecreaseSnake();
             DecreaseScore(5);
         }
+        else if(collision.CompareTag("ShieldPowerUp"))
+        {
+            Destroy(collision.gameObject);
+            ActivateShield();
+        }
+        else if(collision.CompareTag("ScoreBoostPowerUp"))
+        {
+            Destroy(collision.gameObject);
+            ActivateScoreBoost();
+        }
+        else if(collision.CompareTag("SpeedUpPowerUp"))
+        {
+            Destroy(collision.gameObject);
+            ActivateSpeedUp();
+        }
         //also for collision with other snake
         else if (collision.CompareTag("Player1") || collision.CompareTag("Player2"))
         {
             SnakeController otherSnake = collision.GetComponent<SnakeController>();
-
-            if (otherSnake != null)
+            if(otherSnake != null)
             {
-                Die();
-                otherSnake.Die();
+                if (isShieldActive || otherSnake.isShieldActive)
+                {
+                    // Pass through the other snake without dying if either has a shield active.
+                }
+                else if(!isShieldActive)
+                {
+                    Die();
+                    otherSnake.Die();
+                }
             }
+        }
+    }
+
+    private IEnumerator SpawnPowerUpsRoutine()
+    {
+        while(true)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(10f, 15f));    //Adjust interval here
+            //GameObject[] powerUpPrefabs = { shieldPrefab, scoreBoostPrefab, speedUpPrefab };
+            int randomIndex = UnityEngine.Random.Range(0, powerUps.Length);
+            GameObject randomPowerUp = powerUps[randomIndex];
+            Vector3 spawnPosition = GetRandomSpawnPosition(); // Implement GetRandomSpawnPosition() method.
+
+            //Instantiate the power-up prefab and enable it
+            GameObject spawnedPowerUp = Instantiate(randomPowerUp, spawnPosition, Quaternion.identity);
+            spawnedPowerUp.SetActive(true);
+
+            //timer to destroy the power-up if not collected
+            StartCoroutine(DestroyPowerUpAfterTime(spawnedPowerUp));
+        }
+    }
+
+    private Vector3 GetRandomSpawnPosition()
+    {
+        float randomX = UnityEngine.Random.Range(-ScreenBounds.x, ScreenBounds.x);
+        float randomY = UnityEngine.Random.Range(-ScreenBounds.y, ScreenBounds.y);
+        return new Vector3(randomX, randomY, 0f);
+    }
+
+    private void ActivateShield()
+    {
+        isShieldActive = true; 
+        StartCoroutine(DeactivatePowerUp(shieldPrefab));
+    }
+
+    private void ActivateScoreBoost()
+    {
+        isScoreBoostActive = true;
+        // Implement logic to increase the score for a duration.
+        StartCoroutine(DeactivatePowerUp(scoreBoostPrefab));
+    }
+
+    private void ActivateSpeedUp()
+    {
+        isSpeedUpActive = true;
+        moveSpeed *= 2.25f;  //Increase the snake's speed by some factor
+        StartCoroutine(DeactivatePowerUp(speedUpPrefab));
+    }
+
+    private IEnumerator DeactivatePowerUp(GameObject powerUpPrefab)
+    {
+        // Activate the power-up object.
+        powerUpPrefab.SetActive(true);
+
+        // Wait for the power-up duration.
+        yield return new WaitForSeconds(powerUpDuration);
+
+        // Deactivate the power-up object.
+        powerUpPrefab.SetActive(false);
+
+        if(powerUpPrefab == shieldPrefab)
+        {
+            isShieldActive = false;
+        }
+        else if(powerUpPrefab == speedUpPrefab)
+        {
+            isSpeedUpActive = false;
+            moveSpeed /= 2.25f;   //Reset the snake's speed.
+        }
+    }
+
+    private IEnumerator DestroyPowerUpAfterTime(GameObject powerUp)
+    {
+        yield return new WaitForSeconds(10f);
+
+        // Checking if the power-up still exists and hasn't been collected
+        if(powerUp != null)
+        {
+            Destroy(powerUp);
         }
     }
 
@@ -249,8 +357,7 @@ public class SnakeController : MonoBehaviour
     private void MoveBodySegments()
     {
         Vector2 prevPosition = rb.position;
-        // Transform lastSegment = null;
-
+        
         foreach (Transform segment in bodySegments)
         {
             Vector2 tempPosition = segment.position;

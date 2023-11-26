@@ -29,5 +29,6 @@ public class PowerUpController : MonoBehaviour
             Vector2 spawnPosition = new Vector2(Random.Range(-10f, 10f), Random.Range(-10f, 10f));
             Instantiate(powerUpPrefab, spawnPosition, Quaternion.identity);
         }
+        
     }
 }
