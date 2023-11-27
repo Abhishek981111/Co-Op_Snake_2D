@@ -30,7 +30,7 @@ public class SnakeController : MonoBehaviour
     private Vector2 ScreenBounds;
 
     public TextMeshProUGUI scoreText;
-    private int score = 0;
+    public int score = 0;
 
     public GameObject[] powerUps; // Array of power-up prefabs
 
