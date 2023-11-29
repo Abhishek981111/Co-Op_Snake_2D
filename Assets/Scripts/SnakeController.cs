@@ -215,7 +215,7 @@ public class SnakeController : MonoBehaviour
             Destroy(collision.gameObject);
             GrowSnake();
             int scoreMultiplier = isScoreBoostActive ? 2 : 1;
-            IncreaseScore(10 * scoreMultiplier);  //We can adjust as per need.
+            IncreaseScore(10 * scoreMultiplier);  
         }
         else if(collision.CompareTag("DecreaseFood"))
         {
@@ -244,11 +244,12 @@ public class SnakeController : MonoBehaviour
             SnakeController otherSnake = collision.GetComponent<SnakeController>();
             if(otherSnake != null)
             {
+                //Debug.Log("Collision with other snake detected!!!");
                 if (isShieldActive || otherSnake.isShieldActive)
                 {
                     Debug.Log("Snake shield is active");
                 }
-                else if(!isShieldActive)
+                else 
                 {
                     Die();
                     otherSnake.Die();
@@ -261,11 +262,11 @@ public class SnakeController : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSeconds(UnityEngine.Random.Range(10f, 15f));    //Adjust interval here
+            yield return new WaitForSeconds(UnityEngine.Random.Range(10f, 15f));    
             //GameObject[] powerUpPrefabs = { shieldPrefab, scoreBoostPrefab, speedUpPrefab };
             int randomIndex = UnityEngine.Random.Range(0, powerUps.Length);
             GameObject randomPowerUp = powerUps[randomIndex];
-            Vector3 spawnPosition = GetRandomSpawnPosition(); // Implement GetRandomSpawnPosition() method.
+            Vector3 spawnPosition = GetRandomSpawnPosition(); 
 
             //Instantiate the power-up prefab and enable it
             GameObject spawnedPowerUp = Instantiate(randomPowerUp, spawnPosition, Quaternion.identity);
@@ -322,6 +323,10 @@ public class SnakeController : MonoBehaviour
         {
             isSpeedUpActive = false;
             moveSpeed /= 2.25f;   //Reset the snake's speed.
+        }
+        else if(powerUpPrefab == scoreBoostPrefab)
+        {
+            isScoreBoostActive = false;
         }
     }
 

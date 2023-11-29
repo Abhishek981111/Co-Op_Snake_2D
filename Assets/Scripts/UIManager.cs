@@ -79,28 +79,7 @@ public class UIManager : MonoBehaviour
             int greenScore = greenSnake.score;
 
             GameOver(blueScore, greenScore);
+            Debug.Log("Collision with other snake detected!!!");
         }
     }
-
-    // private void OnEnable()
-    // {
-    //     GameObject restartButton = GameObject.Find("RestartButton");
-    //     Button restartBtn = restartButton.GetComponent<Button>();
-    //     restartBtn.onClick.AddListener(RestartGame);
-
-    //     GameObject lobbyButton = GameObject.Find("LobbyButton");
-    //     Button lobbyBtn = lobbyButton.GetComponent<Button>();
-    //     lobbyBtn.onClick.AddListener(ReturnToLobby);
-    // }
-
-    // private void OnDisable()
-    // {
-    //     GameObject restartButton = GameObject.Find("RestartButton");
-    //     Button restartBtn = restartButton.GetComponent<Button>();
-    //     restartBtn.onClick.RemoveAllListeners();
-
-    //     GameObject lobbyButton = GameObject.Find("LobbyButton");
-    //     Button lobbyBtn = lobbyButton.GetComponent<Button>();
-    //     lobbyBtn.onClick.RemoveAllListeners();
-    // }
 }
