@@ -15,11 +15,6 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(false);
-        }
-
         if (restartButton != null)
         {
             restartButton.onClick.AddListener(RestartGame);
@@ -27,7 +22,7 @@ public class UIManager : MonoBehaviour
 
         if (lobbyButton != null)
         {
-            lobbyButton.onClick.AddListener(ReturnToLobby);
+            lobbyButton.onClick.AddListener(LoadLobby);
         }
     }
 
@@ -63,7 +58,7 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void ReturnToLobby()
+    public void LoadLobby()
     {
         SceneManager.LoadScene("Lobby");
     }

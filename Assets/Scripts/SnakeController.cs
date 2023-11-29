@@ -41,9 +41,9 @@ public class SnakeController : MonoBehaviour
     private bool isScoreBoostActive = false;
     private bool isSpeedUpActive = false;
 
-    private float powerUpCooldown = 10.0f;
-    private float timeSinceLastPowerUp = 0.0f;
-    private float powerUpDuration = 10.0f;
+    private float powerUpCooldown = 10f;
+    private float timeSinceLastPowerUp = 0f;
+    private float powerUpDuration = 8f;
 
     public UIManager uiManager;
 
