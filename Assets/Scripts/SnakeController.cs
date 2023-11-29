@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using JetBrains.Annotations;
 using System;
 
 public class SnakeController : MonoBehaviour
@@ -45,6 +44,8 @@ public class SnakeController : MonoBehaviour
     private float powerUpCooldown = 10.0f;
     private float timeSinceLastPowerUp = 0.0f;
     private float powerUpDuration = 10.0f;
+
+    public UIManager uiManager;
 
 
     private void Start()
@@ -245,7 +246,7 @@ public class SnakeController : MonoBehaviour
             {
                 if (isShieldActive || otherSnake.isShieldActive)
                 {
-                    // Pass through the other snake without dying if either has a shield active.
+                    Debug.Log("Snake shield is active");
                 }
                 else if(!isShieldActive)
                 {
@@ -350,8 +351,14 @@ public class SnakeController : MonoBehaviour
     private void Die()
     {
         isAlive = false;
-        //add game over logic 
         Debug.Log("Snake died!");
+
+        //game over logic 
+        if (uiManager != null)
+        {
+            //Notify UIManager about snake's death
+            uiManager.HandleSnakeDeath(gameObject.tag);
+        }
     }
 
     private void MoveBodySegments()

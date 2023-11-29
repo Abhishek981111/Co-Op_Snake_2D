@@ -10,54 +10,71 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI gameTieText;
     public GameObject gameOverPanel;
 
+    public Button restartButton;
+    public Button lobbyButton;
+
     private void Start()
     {
-        gameOverPanel.SetActive(false);
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
+
+        if (restartButton != null)
+        {
+            restartButton.onClick.AddListener(RestartGame);
+        }
+
+        if (lobbyButton != null)
+        {
+            lobbyButton.onClick.AddListener(ReturnToLobby);
+        }
     }
 
     public void GameOver(int blueScore, int greenScore)
     {
-        gameOverPanel.SetActive(true);
+        if(gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
 
-        if (blueScore > greenScore)
-        {
-            blueWinsText.gameObject.SetActive(true);
-            greenWinsText.gameObject.SetActive(false);
-            gameTieText.gameObject.SetActive(false);
-        }
-        else if (greenScore > blueScore)
-        {
-            greenWinsText.gameObject.SetActive(true);
-            blueWinsText.gameObject.SetActive(false);
-            gameTieText.gameObject.SetActive(false);
-        }
-        else
-        {
-            gameTieText.gameObject.SetActive(true);
-            greenWinsText.gameObject.SetActive(false);
-            blueWinsText.gameObject.SetActive(false);
+            if (blueScore > greenScore)
+            {
+                blueWinsText.gameObject.SetActive(true);
+                greenWinsText.gameObject.SetActive(false);
+                gameTieText.gameObject.SetActive(false);
+            }
+            else if (greenScore > blueScore)
+            {
+                greenWinsText.gameObject.SetActive(true);
+                blueWinsText.gameObject.SetActive(false);
+                gameTieText.gameObject.SetActive(false);
+            }
+            else
+            {
+                gameTieText.gameObject.SetActive(true);
+                greenWinsText.gameObject.SetActive(false);
+                blueWinsText.gameObject.SetActive(false);
+            }
         }
     }
 
-    // Function to restart the game (attached to the Restart button)
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // Function to return to the lobby (attached to the Lobby button)
     public void ReturnToLobby()
     {
-        SceneManager.LoadScene("Lobby"); 
+        SceneManager.LoadScene("Lobby");
     }
 
     public void HandleSnakeDeath(string snakeTag)
     {
-        if(snakeTag == "Player1" || snakeTag == "Player2")
-        {
-            SnakeController blueSnake = GameObject.FindGameObjectWithTag("Player1").GetComponent<SnakeController>();
-            SnakeController greenSnake = GameObject.FindGameObjectWithTag("Player2").GetComponent<SnakeController>();
+        SnakeController blueSnake = GameObject.FindGameObjectWithTag("Player1").GetComponent<SnakeController>();
+        SnakeController greenSnake = GameObject.FindGameObjectWithTag("Player2").GetComponent<SnakeController>();
 
+        if (blueSnake != null && greenSnake != null)
+        {
             int blueScore = blueSnake.score;
             int greenScore = greenSnake.score;
 
@@ -65,25 +82,25 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        GameObject restartButton = GameObject.Find("RestartButton");
-        Button restartBtn = restartButton.GetComponent<Button>();
-        restartBtn.onClick.AddListener(RestartGame);
+    // private void OnEnable()
+    // {
+    //     GameObject restartButton = GameObject.Find("RestartButton");
+    //     Button restartBtn = restartButton.GetComponent<Button>();
+    //     restartBtn.onClick.AddListener(RestartGame);
 
-        GameObject lobbyButton = GameObject.Find("LobbyButton");
-        Button lobbyBtn = lobbyButton.GetComponent<Button>();
-        lobbyBtn.onClick.AddListener(ReturnToLobby);
-    }
+    //     GameObject lobbyButton = GameObject.Find("LobbyButton");
+    //     Button lobbyBtn = lobbyButton.GetComponent<Button>();
+    //     lobbyBtn.onClick.AddListener(ReturnToLobby);
+    // }
 
-    private void OnDisable()
-    {
-        GameObject restartButton = GameObject.Find("RestartButton"); 
-        Button restartBtn = restartButton.GetComponent<Button>();
-        restartBtn.onClick.RemoveAllListeners();
+    // private void OnDisable()
+    // {
+    //     GameObject restartButton = GameObject.Find("RestartButton");
+    //     Button restartBtn = restartButton.GetComponent<Button>();
+    //     restartBtn.onClick.RemoveAllListeners();
 
-        GameObject lobbyButton = GameObject.Find("LobbyButton"); 
-        Button lobbyBtn = lobbyButton.GetComponent<Button>();
-        lobbyBtn.onClick.RemoveAllListeners();
-    }
+    //     GameObject lobbyButton = GameObject.Find("LobbyButton");
+    //     Button lobbyBtn = lobbyButton.GetComponent<Button>();
+    //     lobbyBtn.onClick.RemoveAllListeners();
+    // }
 }

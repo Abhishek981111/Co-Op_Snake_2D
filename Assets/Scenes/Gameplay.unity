@@ -285,6 +285,7 @@ MonoBehaviour:
   shieldPrefab: {fileID: 4755840402607920617, guid: cc58539922249e04aa7814c9896f15ba, type: 3}
   scoreBoostPrefab: {fileID: 5901867899661608148, guid: 913cfa2662052e247975d72e5cd6e177, type: 3}
   speedUpPrefab: {fileID: 5451965397783045739, guid: 120e1fab48841b646aea52d6b7491312, type: 3}
+  uiManager: {fileID: 1984743651}
 --- !u!1 &279549884
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,6 +1467,7 @@ MonoBehaviour:
   shieldPrefab: {fileID: 4755840402607920617, guid: cc58539922249e04aa7814c9896f15ba, type: 3}
   scoreBoostPrefab: {fileID: 5901867899661608148, guid: 913cfa2662052e247975d72e5cd6e177, type: 3}
   speedUpPrefab: {fileID: 5451965397783045739, guid: 120e1fab48841b646aea52d6b7491312, type: 3}
+  uiManager: {fileID: 1984743651}
 --- !u!1 &1300177015
 GameObject:
   m_ObjectHideFlags: 0
@@ -2164,6 +2166,8 @@ MonoBehaviour:
   greenWinsText: {fileID: 611216749}
   gameTieText: {fileID: 1173993314}
   gameOverPanel: {fileID: 1984743647}
+  restartButton: {fileID: 279549886}
+  lobbyButton: {fileID: 1605306613}
 --- !u!1 &2003522775
 GameObject:
   m_ObjectHideFlags: 0
