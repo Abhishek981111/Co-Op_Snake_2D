@@ -27,28 +27,33 @@ public class LobbyManager : MonoBehaviour
 
     public void StartGame()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         startPanel.SetActive(false);
         levelSelectionPanel.SetActive(true);
     }
 
     public void LoadLevel1()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene("Single_Player_Gameplay");
     }
 
     public void LoadLevel2()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene("Co-Op_Gameplay"); 
     }
 
     public void GoBackToLobby()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         levelSelectionPanel.SetActive(false);
         startPanel.SetActive(true);
     }
 
     public void QuitGame()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         Application.Quit();
         Debug.Log("Application Quit !!!");
     }

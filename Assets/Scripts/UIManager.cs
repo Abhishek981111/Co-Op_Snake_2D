@@ -55,11 +55,13 @@ public class UIManager : MonoBehaviour
 
     public void RestartGame()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void LoadLobby()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene("Lobby");
     }
 

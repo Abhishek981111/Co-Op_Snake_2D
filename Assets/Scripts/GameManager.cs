@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
 
         if (isGamePaused)
         {
+            SoundManager.Instance.Play(Sounds.ButtonClick);
             Time.timeScale = 0f; 
             pausePanel.SetActive(true);
             pauseButton.gameObject.SetActive(false); 
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         Time.timeScale = 1f; 
         pausePanel.SetActive(false);
         resumeButton.gameObject.SetActive(false); 
@@ -50,12 +52,14 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         Time.timeScale = 1f; 
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void LoadMainMenu()
     {
         Time.timeScale = 1f; 
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene("Lobby"); 
     }
 

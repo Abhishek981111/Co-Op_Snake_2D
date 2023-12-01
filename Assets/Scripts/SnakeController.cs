@@ -212,6 +212,7 @@ public class SnakeController : MonoBehaviour
     {
         if(collision.CompareTag("GrowthFood"))
         {
+            SoundManager.Instance.Play(Sounds.FoodEating);
             Destroy(collision.gameObject);
             GrowSnake();
             int scoreMultiplier = isScoreBoostActive ? 2 : 1;
@@ -219,22 +220,26 @@ public class SnakeController : MonoBehaviour
         }
         else if(collision.CompareTag("DecreaseFood"))
         {
+            SoundManager.Instance.Play(Sounds.FoodEating);
             Destroy(collision.gameObject);
             DecreaseSnake();
             DecreaseScore(5);
         }
         else if(collision.CompareTag("ShieldPowerUp"))
         {
+            SoundManager.Instance.Play(Sounds.PowerUpsEating);
             Destroy(collision.gameObject);
             ActivateShield();
         }
         else if(collision.CompareTag("ScoreBoostPowerUp"))
         {
+            SoundManager.Instance.Play(Sounds.PowerUpsEating);
             Destroy(collision.gameObject);
             ActivateScoreBoost();
         }
         else if(collision.CompareTag("SpeedUpPowerUp"))
         {
+            SoundManager.Instance.Play(Sounds.PowerUpsEating);
             Destroy(collision.gameObject);
             ActivateSpeedUp();
         }
@@ -357,6 +362,7 @@ public class SnakeController : MonoBehaviour
     {
         isAlive = false;
         Debug.Log("Snake died!");
+        SoundManager.Instance.Play(Sounds.SnakeDeath);
 
         //game over logic 
         if (uiManager != null)
