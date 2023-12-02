@@ -68,7 +68,7 @@ public class UIManager : MonoBehaviour
     public void HandleSnakeDeath(string snakeTag)
     {
         SnakeController blueSnake = GameObject.FindGameObjectWithTag("Player1").GetComponent<SnakeController>();
-        SnakeController greenSnake = GameObject.FindGameObjectWithTag("Player2").GetComponent<SnakeController>();
+        SnakeController greenSnake = GameObject.FindGameObjectWithTag("Player2")?.GetComponent<SnakeController>();
 
         if (blueSnake != null && greenSnake != null)
         {
@@ -77,6 +77,16 @@ public class UIManager : MonoBehaviour
 
             GameOver(blueScore, greenScore);
             Debug.Log("Collision with other snake detected!!!");
+        }
+        else if(blueSnake != null && greenSnake == null && snakeTag == "Player1")
+        {
+            int blueScore = blueSnake.score;
+            GameOver(blueScore, 0);
+        }
+        else if(greenSnake != null && blueSnake == null && snakeTag == "Player2")
+        {
+            int greenScore = greenSnake.score;
+            GameOver(0, greenScore);
         }
     }
 }

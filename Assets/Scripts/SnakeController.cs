@@ -39,7 +39,7 @@ public class SnakeController : MonoBehaviour
 
     private bool isShieldActive = false;
     private bool isScoreBoostActive = false;
-    private bool isSpeedUpActive = false;
+    //private bool isSpeedUpActive = false;
 
     private float powerUpCooldown = 10f;
     private float timeSinceLastPowerUp = 0f;
@@ -74,6 +74,7 @@ public class SnakeController : MonoBehaviour
         speedUpPrefab.SetActive(false);
 
         StartCoroutine(SpawnPowerUpsRoutine());
+        SoundManager.Instance.Play(Sounds.Music);
     }
 
     private void Update()
@@ -304,7 +305,7 @@ public class SnakeController : MonoBehaviour
 
     private void ActivateSpeedUp()
     {
-        isSpeedUpActive = true;
+        //isSpeedUpActive = true;
         moveSpeed *= 2.25f;  //Increase the snake's speed by some factor
         StartCoroutine(DeactivatePowerUp(speedUpPrefab));
     }
@@ -326,7 +327,7 @@ public class SnakeController : MonoBehaviour
         }
         else if(powerUpPrefab == speedUpPrefab)
         {
-            isSpeedUpActive = false;
+            //isSpeedUpActive = false;
             moveSpeed /= 2.25f;   //Reset the snake's speed.
         }
         else if(powerUpPrefab == scoreBoostPrefab)
@@ -361,8 +362,10 @@ public class SnakeController : MonoBehaviour
     private void Die()
     {
         isAlive = false;
+        rb.velocity = Vector2.zero;
         Debug.Log("Snake died!");
         SoundManager.Instance.Play(Sounds.SnakeDeath);
+        this.enabled = false;
 
         //game over logic 
         if (uiManager != null)
