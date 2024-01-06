@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Player1
+  - GrowthFood
+  - DecreaseFood
+  - Player2
+  - ScoreBoostPowerUp
+  - ShieldPowerUp
+  - SpeedUpPowerUp
   layers:
   - Default
   - TransparentFX
